@@ -176,19 +176,61 @@ chipotle_db = pd.read_sql(query, get_db_url('chipotle'))
 chipotle_db
 
 # What is the total price for each order?
-chipotle_db.groupby('order_id').math.sum()
-chipotle_db.pivot_table(index = 'order_id', columns = 'item_name', values='item_price')
+chipotle_db['item_price'] = chipotle_db.item_price.str.replace('$', '').astype(float)
+chipotle_db
+chipotle_db.groupby('order_id').item_price.sum()
 
 # What are the most popular 3 items?
-chipotle_db.groupby('item_name').describe().sort_values(by= 'order_id', ascending = False).head(3)
+chipotle_db.groupby('item_name').quantity.sum().sort_values(ascending = False).head(3)
+# Chicken Bowl           761
+# Chicken Burrito        591
+# Chips and Guacamole    506
 
 # Which item has produced the most revenue?
+chipotle_db.groupby('item_name').item_price.sum().sort_values(ascending = False).head(1)
+#Chicken Bowl    7342.73
 
 # Join the employees and titles DataFrames together.
+emp_titles = employees.merge(titles, on='emp_no')
 
 # For each title, find the hire date of the employee
 #  that was hired most recently with that title.
+emp_titles.groupby('title').hire_date.max()
+# Assistant Engineer    1999-12-24
+# Engineer              2000-01-28
+# Manager               1992-02-05
+# Senior Engineer       2000-01-01
+# Senior Staff          2000-01-13
+# Staff                 2000-01-12
+# Technique Leader      1999-12-31
 
 # Write the code necessary to create a cross tabulation of the number of titles 
 # by department. (Hint: this will involve a combination of SQL code 
 # to pull the necessary data and python/pandas code to perform the manipulations.)
+dept_title_query = '''
+
+                    SELECT t.emp_no, 
+                    t.title, 
+                    t.from_date, 
+                    t.to_date, 
+                    d.dept_name 
+                    FROM departments AS d 
+                    JOIN dept_emp AS de USING(dept_no) 
+                    JOIN titles AS t USING(emp_no);
+
+                    '''
+dept_titles = pd.read_sql(dept_title_query, get_db_url('employees'))
+dept_titles.head()
+
+titles_crosstab = pd.crosstab(dept_titles.dept_name, dept_titles.title)
+titles_crosstab
+
+#current employees
+current_titles = dept_titles[dept_titles.to_date == dept_titles.to_date.max()]
+current_titles.head()
+
+current_titles_crosstab = pd.crosstab(current_titles.dept_name, current_titles.title)
+current_titles_crosstab
+
+# highlight max numbers in crosstab
+current_titles_crosstab.style.highlight_max(axis=1)
