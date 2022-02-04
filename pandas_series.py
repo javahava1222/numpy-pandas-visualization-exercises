@@ -153,55 +153,100 @@ boolea = fruit_list.str.count() == vowel_max
 fruit_list[boolea]
 
 # Exercises Part III
-# Use pandas to create a Series named letters from the following string. The easiest way to make this string into a Pandas series is to use list to convert each individual letter into a single string on a basic Python list.
+# Use pandas to create a Series named letters from the following string. 
+# The easiest way to make this string into a Pandas series is to use list 
+# to convert each individual letter into a single string on a basic Python list.
+string = 'hnvidduckkqxwymbimkccexbkmqygkxoyndmcxnwqarhyffsjpsrabtjzsypmzadfavyrnndndvswreauxovncxtwzpwejilzjrmmbbgbyxvjtewqthafnbkqplarokkyydtubbmnexoypulzwfhqvckdpqtpoppzqrmcvhhpwgjwupgzhiofohawytlsiyecuproguy'
 
-
+letters = pd.Series(list(string))
+letters
 #     'hnvidduckkqxwymbimkccexbkmqygkxoyndmcxnwqarhyffsjpsrabtjzsypmzadfavyrnndndvswreauxovncxtwzpwejilzjrmmbbgbyxvjtewqthafnbkqplarokkyydtubbmnexoypulzwfhqvckdpqtpoppzqrmcvhhpwgjwupgzhiofohawytlsiyecuproguy'
 # Which letter occurs the most frequently in the letters Series?
+letters.value_counts().sort_values(ascending=False)
 
 # Which letter occurs the Least frequently?
+letters.value_counts().nsmallest(n=1, keep='all')
 
 # How many vowels are in the Series?
+letters.str.lower().str.count('[aeiou]')
+letters.str.lower().str.count('[aeiou]').sum()
 
 # How many consonants are in the Series?
+letters.str.lower().str.count('[^aeiou]').sum()
 
 # Create a Series that has all of the same letters but uppercased.
+letters.str.upper()
 
 # Create a bar plot of the frequencies of the 6 most commonly occuring letters.
 
+top7 = letters.value_counts().head(7)
+top7.plot(kind='barh',
+        width=.6)
+
+plt.title('Top 6 Letters')
+
+plt.gca().invert_yaxis()
+
+plt.show()
+
 # Use pandas to create a Series named numbers from the following list:
 
-
+nums_list = ['$796,459.41', '$278.60', '$482,571.67', '$4,503,915.98', '$2,121,418.3', '$1,260,813.3', '$87,231.01', '$1,509,175.45', '$4,138,548.00', '$2,848,913.80', '$594,715.39', '$4,789,988.17', '$4,513,644.5', '$3,191,059.97', '$1,758,712.24', '$4,338,283.54', '$4,738,303.38', '$2,791,759.67', '$769,681.94', '$452,650.23']
+numbers = pd.Series(nums_list)
+numbers
 #     ['$796,459.41', '$278.60', '$482,571.67', '$4,503,915.98', '$2,121,418.3', '$1,260,813.3', '$87,231.01', '$1,509,175.45', '$4,138,548.00', '$2,848,913.80', '$594,715.39', '$4,789,988.17', '$4,513,644.5', '$3,191,059.97', '$1,758,712.24', '$4,338,283.54', '$4,738,303.38', '$2,791,759.67', '$769,681.94', '$452,650.23']
 # What is the data type of the numbers Series?
-
+numbers.dtype
 # How many elements are in the number Series?
-
+numbers.size
 # Perform the necessary manipulations by accessing Series attributes and methods to convert the numbers Series to a numeric data type.
-
+num_series = numbers.str.replace('$', '').str.replace(',','').astype('float')
 # Run the code to discover the maximum value from the Series.
-
+numbers.describe()
+num_series.describe()
+num_series.max()
 # Run the code to discover the minimum value from the Series.
-
+num_series.min()
 # What is the range of the values in the Series?
-
+num_series.max() - num_series.min()
 # Bin the data into 4 equally sized intervals or bins and output how many values fall into each bin.
-
+num_series.value_counts(bins=4)
 # Plot the binned data in a meaningful way. Be sure to include a title and axis labels.
+num_series.value_counts(bins=4).sort_index(ascending=False).plot(kind='barh', width=0.7)
 
+plt.title('4 Bins')
+plt.xlabel('Count')
+plt.ylabel('$')
+plt.show()
 # Use pandas to create a Series named exam_scores from the following list:
-
-
+scores_list = [60, 86, 75, 62, 93, 71, 60, 83, 95, 78, 65, 72, 69, 81, 96, 80, 85, 92, 82, 78]
+exam_scores = pd.Series(scores_list)
 #     [60, 86, 75, 62, 93, 71, 60, 83, 95, 78, 65, 72, 69, 81, 96, 80, 85, 92, 82, 78]
 # How many elements are in the exam_scores Series?
+exam_scores.size
 
 # Run the code to discover the minimum, the maximum, the mean, and the median scores for the exam_scores Series.
+exam_scores.describe()
 
 # Plot the Series in a meaningful way and make sure your chart has a title and axis labels.
+exam_scores.plot.hist()
 
-# Write the code necessary to implement a curve for your exam_grades Series and save this as curved_grades. Add the necessary points to the highest grade to make it 100, and add the same number of points to every other score in the Series as well.
+plt.title('Exam Scores Distribution')
+plt.xlabel('Scores')
+plt.show()
+# Write the code necessary to implement a curve for your exam_grades Series and save this as curved_grades. 
+# Add the necessary points to the highest grade to make it 100, and add the same number of points to every other score in the Series as well.
+curve = 100 - exam_scores.max()
+curve
+curved_scores = exam_scores + curve
+curved_scores
+# Use a method to convert each of the numeric values in the curved_grades Series into a categorical value of letter grades. 
+# For example, 86 should be a 'B' and 95 should be an 'A'. Save this as a Series named letter_grades.
+bin_edges = [0, 70, 75, 80, 90, 101]
 
-# Use a method to convert each of the numeric values in the curved_grades Series into a categorical value of letter grades. For example, 86 should be a 'B' and 95 should be an 'A'. Save this as a Series named letter_grades.
+bin_labels = ['F', 'D', 'C', 'B', 'A']
+
+letter_grades = pd.cut(curved_scores, bins=bin_edges, labels=bin_labels)
+letter_grades
 
 # Plot your new categorical letter_grades Series in a meaninful way and include a title and axis labels.
-
