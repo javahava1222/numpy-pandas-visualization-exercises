@@ -229,24 +229,68 @@ exam_scores.size
 exam_scores.describe()
 
 # Plot the Series in a meaningful way and make sure your chart has a title and axis labels.
-exam_scores.plot.hist()
+exam_scores.plot.hist(width = 3)
 
 plt.title('Exam Scores Distribution')
 plt.xlabel('Scores')
 plt.show()
-# Write the code necessary to implement a curve for your exam_grades Series and save this as curved_grades. 
-# Add the necessary points to the highest grade to make it 100, and add the same number of points to every other score in the Series as well.
+# Write the code necessary to implement a curve for your exam_grades Series
+#  and save this as curved_grades. 
+# Add the necessary points to the highest grade to make it 100, 
+# and add the same number of points to every other score in the Series as well.
 curve = 100 - exam_scores.max()
 curve
-curved_scores = exam_scores + curve
-curved_scores
-# Use a method to convert each of the numeric values in the curved_grades Series into a categorical value of letter grades. 
-# For example, 86 should be a 'B' and 95 should be an 'A'. Save this as a Series named letter_grades.
+curved_grades = exam_scores + curve
+curved_grades
+# Use a method to convert each of the numeric values in the curved_grades Series 
+# into a categorical value of letter grades. 
+# For example, 86 should be a 'B' and 95 should be an 'A'. 
+# Save this as a Series named letter_grades.
 bin_edges = [0, 70, 75, 80, 90, 101]
-
 bin_labels = ['F', 'D', 'C', 'B', 'A']
 
-letter_grades = pd.cut(curved_scores, bins=bin_edges, labels=bin_labels)
+letter_grades = pd.cut(curved_grades, bins=bin_edges, labels=bin_labels)
 letter_grades
 
-# Plot your new categorical letter_grades Series in a meaninful way and include a title and axis labels.
+letter_grades.value_counts().sort_index().plot.barh(color='royalblue',
+                                                    ec='pink',
+                                                    width=.8)
+
+plt.title('Letter Grades')
+plt.xlabel('Number of Students')
+plt.ylabel('Letter Grade')
+
+plt.show()
+
+# Plot your new categorical letter_grades Series in a meaninful way 
+# and include a title and axis labels.
+bin_edges = [0, 70, 75, 80, 90, 101]
+bin_labels = ['F', 'D', 'C', 'B', 'A']
+
+plt.subplot(2,1,1)
+
+pd.cut(exam_scores, 
+       bins=bin_edges, 
+       labels=bin_labels).value_counts().sort_index().plot.barh(color='red',
+                                                                  ec='blue',
+                                                                  width=.8)
+
+plt.title('Letter Grades')
+plt.xlabel('Number of Students')
+plt.ylabel('Letter Grade')
+plt.xlim(0, 8)
+
+plt.show()
+
+plt.subplot(2,1,2)
+pd.cut(curved_grades,
+         bins=bin_edges, 
+         labels=bin_labels).value_counts().sort_index().plot.barh(color='royalblue',
+                                                                                                ec='pink',
+                                                                                                width=.8)
+                
+plt.title('Curved Letter Grades')
+plt.xlabel('Number of Students')
+plt.ylabel('Letter Grade')
+
+plt.show()

@@ -116,19 +116,20 @@ sum_of_matrix
 sum_of_b = 0
 for row in b:
     sum_of_b += sum(row)
-
-
-
+np.sum(b)
 
 # Exercise 2 - refactor the following to use numpy. 
 min_of_b = min(b[0]) if min(b[0]) <= min(b[1]) else min(b[1])  
+min_of_b
+np.min(b)
 
 # Exercise 3 - refactor the following maximum calculation to find the answer with numpy.
 max_of_b = max(b[0]) if max(b[0]) >= max(b[1]) else max(b[1])
-
+np.max(b)
 
 # Exercise 4 - refactor the following using numpy to find the mean of b
 mean_of_b = (sum(b[0]) + sum(b[1])) / (len(b[0]) + len(b[1]))
+np.mean(b)
 
 # Exercise 5 - refactor the following to use numpy for calculating the product
 #  of all numbers multiplied together.
@@ -136,13 +137,14 @@ product_of_b = 1
 for row in b:
     for number in row:
         product_of_b *= number
+np.product(b)
 
 # Exercise 6 - refactor the following to use numpy to find the list of squares 
 squares_of_b = []
 for row in b:
     for number in row:
         squares_of_b.append(number**2)
-
+np.square(b)
 
 # Exercise 7 - refactor using numpy to determine the odds_in_b
 odds_in_b = []
@@ -150,7 +152,7 @@ for row in b:
     for number in row:
         if(number % 2 != 0):
             odds_in_b.append(number)
-
+b[b % 2 == 1]
 
 # Exercise 8 - refactor the following to use numpy to filter only the even numbers
 evens_in_b = []
@@ -158,6 +160,7 @@ for row in b:
     for number in row:
         if(number % 2 == 0):
             evens_in_b.append(number)
+b[b % 2 == 0]
 
 # Exercise 9 - print out the shape of the array b.
 b.shape
